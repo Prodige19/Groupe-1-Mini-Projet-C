@@ -43,14 +43,16 @@ struct operation {
 
 // Fonction pour allouer un nouveau client
 struct client* allouerclient(const char* codecl, const char* prenom, const char* nom, int tel, const char* ville) {
-    //Allocation de mémoire
+    //Allocation de mémoire pour le nouveau client
     struct client* nouveau_client = (struct client*)malloc(sizeof(struct client));
+
+    //Copie des informations pour le client
     if (nouveau_client != NULL) {
-        strcpy(nouveau_client->codecl, codecl); //allocation pour le code du client
-        strcpy(nouveau_client->prenom, prenom); //allocation pour le prenom du client
-        strcpy(nouveau_client->nom, nom); //allocation pour le nom du client
-        nouveau_client->tel = tel; //allocation pour le tel du client
-        strcpy(nouveau_client->ville, ville); //allocation pour laa ville du client
+        strcpy(nouveau_client->codecl, codecl);
+        strcpy(nouveau_client->prenom, prenom);
+        strcpy(nouveau_client->nom, nom);
+        nouveau_client->tel = tel;
+        strcpy(nouveau_client->ville, ville); 
         nouveau_client->suivant = NULL;
     }
     return nouveau_client;
@@ -58,15 +60,17 @@ struct client* allouerclient(const char* codecl, const char* prenom, const char*
 
 // Fonction pour allouer un nouveau compte
 struct compte* allouercompte(int numero, struct date dateouverture, const char* agence, float solde, const char* codecl) {
+    
     // Allocation de mémoire
     struct compte* nouveau_compte = (struct compte*)malloc(sizeof(struct compte));
 
     if (nouveau_compte != NULL) {
-        nouveau_compte->numero = numero; // allocation pour le numéro du compte
-        nouveau_compte->dateouverture = dateouverture; // allocation pour la date d'ouverture du compte
-        strcpy(nouveau_compte->agence, agence); // allocation pour l'agence du compte
-        nouveau_compte->solde = solde; // allocation pour le solde du compte
-        strcpy(nouveau_compte->codecl, codecl); // allocation pour le codecl du compte
+        //Copie des informations
+        nouveau_compte->numero = numero;
+        nouveau_compte->dateouverture = dateouverture;
+        strcpy(nouveau_compte->agence, agence);
+        nouveau_compte->solde = solde;
+        strcpy(nouveau_compte->codecl, codecl);
         nouveau_compte->suivant = NULL;
     }
     return nouveau_compte;
@@ -101,10 +105,10 @@ void copieclient(struct client* tete_client, const char* nomFichier) {
         printf("Erreur lors de l'ouverture du fichier %s\n", nomFichier);
         return;
     }
-    struct client* p = tete_client;
-    while (p != NULL) {
-        fprintf(fichier, "codecl: %s, Prenom: %s, Nom: %s, tel: %d, Ville: %s\n", p->codecl, p->prenom, p->nom, p->tel, p->ville);
-        p = p->suivant;
+    struct client* p_client = tete_client;
+    while (p_client != NULL) {
+        fprintf(fichier, "codecl: %s, Prenom: %s, Nom: %s, tel: %d, Ville: %s\n", p_client->codecl, p_client->prenom, p_client->nom, p_client->tel, p_client->ville);
+        p_client = p_client->suivant;
     }
     fclose(fichier);
     printf("Les clients ont été copiés dans le fichier %s\n", nomFichier);
@@ -112,15 +116,19 @@ void copieclient(struct client* tete_client, const char* nomFichier) {
 
 // Fonction pour copier les comptes dans le fichier comptes.txt
 void copiecompte(struct compte* tete_compte, const char* nomFichier) {
+
+    //Ouverture du fichier en mode ajout
     FILE* fichier = fopen(nomFichier, "a+");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture du fichier %s\n", nomFichier);
         return;
     }
-    struct compte* p = tete_compte;
-    while (p != NULL) {
-        fprintf(fichier, "numero: %d, date ouverture: %02d/%02d/%d, agence: %s, solde: %.2f, codecl: %s\n", p->numero, p->dateouverture.jour, p->dateouverture.mois, p->dateouverture.annee, p->agence, p->solde, p->codecl);
-        p = p->suivant;
+    struct compte* p_compte = tete_compte;
+    
+    //Ecriture dans le fichier txt
+    while (p_compte != NULL) {
+        fprintf(fichier, "numero: %d, date ouverture: %02d/%02d/%d, agence: %s, solde: %.2f, codecl: %s\n", p_compte->numero, p_compte->dateouverture.jour, p_compte->dateouverture.mois, p_compte->dateouverture.annee,p_compte->agence, p_compte->solde, p_compte->codecl);
+        p_compte = p_compte->suivant;
     }
     fclose(fichier);
     printf("Les comptes ont été copiés dans le fichier %s\n", nomFichier);
@@ -170,8 +178,6 @@ int retirer(struct compte* tete_compte, int numero, float montant, const char* c
     }
     return 0; // Échec, compte non trouvé
 }
-
-
 
 int main(){
     // Initialisation de la tête du client
@@ -339,7 +345,6 @@ int main(){
         }
 
     } while(choix != 7);
-
 
     printf("Bien la Bonne Journée à vous !");
     
